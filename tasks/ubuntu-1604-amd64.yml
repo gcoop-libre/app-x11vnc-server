@@ -32,21 +32,24 @@
      path: /etc/x11vnc.pass
      mode: 0644
 
-  - name: "Transfer x11vnc.service.j2 to /lib/systemd/system/x11vnc.service"
+  - name: "copy autostart file"
     template:
-      src: x11vnc.service.j2
-      dest: /lib/systemd/system/x11vnc.service
+      src: x11vnc.desktop.j2
+      dest: ~/.config/autostart/x11vnc.desktop 
+      mode: 0664
+    become: false
 
-  - name: "start x11vnc service"
-    shell: service x11vnc start
+  - name: "Creates /etc/skel/.config/autostart directory"
+    file:
+      path: /etc/skel/.config/autostart
+      state: directory
 
-  - name: "enable x11vnc service on boot"
-    systemd:
-      name: x11vnc.service
-      daemon_reload: yes
-      enabled: yes
-      state: started
- 
+  - name: "copy autostart file in skel"
+    template:
+      src: x11vnc.desktop.j2
+      dest: /etc/skel/.config/autostart/x11vnc.desktop 
+      mode: 0664
+
   - name: "Allow traffic on port 5900/tcp"
     ufw:
       rule: allow
@@ -59,4 +62,3 @@
       mode: 0740
       owner: root
       group: administrator
-

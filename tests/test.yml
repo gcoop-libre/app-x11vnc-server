@@ -1,5 +1,7 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: [test]
+  connection: local
+  #remote_user: bcc 
+  become: true
   roles:
-    - app-tighvnc-server
+    - role: gcoop-libre.gnome-desktop
